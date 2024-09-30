@@ -75,9 +75,9 @@ http
         };
         tasks.push(task);
 
-        response.writeHead(201);
-        const responseBody = getTasksHTML();
-        response.write(responseBody);
+        response.writeHead(303, {
+          Location: "/tasks",
+        });
         response.end();
       });
       return;
