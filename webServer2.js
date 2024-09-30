@@ -12,6 +12,7 @@ http
     const requestFile = path.endsWith("/") ? path + "index.html" : path;
 
     if (
+      method !== "GET" ||
       !fs.existsSync(`.${requestFile}`) ||
       fs.statSync(`.${requestFile}`).isDirectory()
     ) {
@@ -26,6 +27,10 @@ http
         requestOptions
       );
 
+      request.on("data", (data) => {
+        taskWebAppRequest.write(data);
+      });
+
       taskWebAppRequest.on("response", (taskWebAppResponse) => {
         response.writeHead(taskWebAppResponse.statusCode);
         taskWebAppResponse.on("data", (data) => {
@@ -36,7 +41,9 @@ http
         });
       });
 
-      taskWebAppRequest.end();
+      request.on("end", () => {
+        taskWebAppRequest.end();
+      });
       return;
     }
 
@@ -46,3 +53,5 @@ http
     response.end();
   })
   .listen(PORT, "127.0.0.1");
+
+console.log(`Server started on port ${PORT}`);

@@ -13,7 +13,7 @@ const tasks = [
   },
 ];
 
-function getTaskHTML() {
+function getTasksHTML() {
   const tasksHTMLElement = tasks
     .map((task) => {
       return `<tr>
@@ -50,14 +50,36 @@ function getTaskHTML() {
 
 http
   .createServer((request, response) => {
+    const method = request.method;
     const path = request.url;
     console.log(`[request] ${path}`);
 
-    if (path === "/tasks") {
+    if (path === "/tasks" && method === "GET") {
       response.writeHead(200);
-      const responseBody = getTaskHTML();
+      const responseBody = getTasksHTML();
       response.write(responseBody);
       response.end();
+      return;
+    } else if (path === "/tasks" && method === "POST") {
+      let requestBody = "";
+      request.on("data", (data) => {
+        requestBody += data;
+      });
+
+      request.on("end", () => {
+        const title = requestBody.split("=")[1];
+
+        const task = {
+          title: title,
+          createdAt: new Date(),
+        };
+        tasks.push(task);
+
+        response.writeHead(201);
+        const responseBody = getTasksHTML();
+        response.write(responseBody);
+        response.end();
+      });
       return;
     }
 
@@ -66,3 +88,5 @@ http
     return;
   })
   .listen(PORT, "127.0.0.1");
+
+console.log(`Server started on port ${PORT}`);
