@@ -31,6 +31,7 @@ function getTaskHTML() {
   </head>
   <body>
     <h1>タスク一覧</h1>
+    <a href="/tasks/new.html">タスク登録へ</a>
     <table>
       <thead>
         <tr>
