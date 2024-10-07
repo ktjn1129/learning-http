@@ -1,4 +1,6 @@
 const tasksTableBodyElement = document.getElementById("tasks-table-body");
+const taskTitleInputElement = document.getElementById("task-title-input");
+const taskAddButtonElement = document.getElementById("task-add-button");
 
 async function loadTasks() {
   const response = await fetch("/api/tasks");
@@ -21,7 +23,21 @@ async function loadTasks() {
   });
 }
 
+async function registerTask() {
+  const title = taskTitleInputElement.value;
+
+  const requestBody = {
+    title: title,
+  };
+
+  await fetch("/api/tasks", {
+    method: "POST",
+    body: JSON.stringify(requestBody),
+  });
+}
+
 async function main() {
+  taskAddButtonElement.addEventListener("click", registerTask);
   await loadTasks();
 }
 
