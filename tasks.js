@@ -8,6 +8,10 @@ async function loadTasks() {
 
   const tasks = responseBody.tasks;
 
+  while (tasksTableBodyElement.firstChild) {
+    tasksTableBodyElement.removeChild(tasksTableBodyElement.firstChild);
+  }
+
   tasks.forEach((task) => {
     const titleTdElement = document.createElement("td");
     titleTdElement.innerText = task.title;
@@ -34,6 +38,8 @@ async function registerTask() {
     method: "POST",
     body: JSON.stringify(requestBody),
   });
+
+  await loadTasks();
 }
 
 async function main() {
