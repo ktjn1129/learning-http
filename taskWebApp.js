@@ -97,6 +97,13 @@ http
 
       request.on("end", () => {
         const requestBodyJson = JSON.parse(requestBody);
+        const title = requestBodyJson.title;
+
+        if (!title || title.length < 1 || 30 < title.length) {
+          response.writeHead(400);
+          response.end();
+          return;
+        }
 
         const task = {
           title: requestBodyJson.title,

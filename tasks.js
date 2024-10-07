@@ -43,6 +43,12 @@ async function registerTask() {
 }
 
 async function main() {
+  taskTitleInputElement.addEventListener("input", (event) => {
+    const inputValue = event.target.value;
+    const isInvalidInput = inputValue.length < 1 || 30 < inputValue.length;
+    taskAddButtonElement.disabled = isInvalidInput;
+  });
+
   taskAddButtonElement.addEventListener("click", registerTask);
   await loadTasks();
 }
