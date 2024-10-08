@@ -1,6 +1,20 @@
 const http = require("http");
+const uid = require("uid-safe").sync;
 
 const PORT = 8080;
+
+const sessions = {};
+
+const users = [
+  {
+    id: 1,
+    name: "alice",
+  },
+  {
+    id: 2,
+    name: "bob",
+  },
+];
 
 const tasks = [
   {
@@ -124,6 +138,33 @@ http
       response.setHeader("Set-Cookie", "name=alice");
       response.writeHead(200);
       response.write("set cookie sample");
+      response.end();
+      return;
+    } else if (path === "/session-start" && method === "GET") {
+      const userId = 1;
+      const sessionId = uid(24);
+
+      sessions[sessionId] = {
+        userId: userId,
+      };
+
+      response.setHeader("Set-Cookie", `sid=${sessionId}`);
+      response.writeHead(200);
+      response.write("session started");
+      response.end();
+      return;
+    } else if (path === "/me" && method === "GET") {
+      const cookie = request.headers.cookie;
+      const sessionId = cookie.split("=")[1];
+
+      const userId = sessions[sessionId].userId;
+
+      const user = users.find((user) => {
+        return user.id === userId;
+      });
+
+      response.writeHead(200);
+      response.write(`userId: ${userId}, userName: ${user.name}`);
       response.end();
       return;
     }
