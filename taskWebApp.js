@@ -53,6 +53,9 @@ http
     const method = request.method;
     const path = request.url;
     console.log(`[request] ${path}`);
+    Object.entries(request.headers).forEach((header) => {
+      console.log(header);
+    });
 
     if (path === "/tasks" && method === "GET") {
       response.writeHead(200);
@@ -116,6 +119,12 @@ http
         response.end();
       });
 
+      return;
+    } else if (path === "/set-cookie-sample" && method === "GET") {
+      response.setHeader("Set-Cookie", "name=alice");
+      response.writeHead(200);
+      response.write("set cookie sample");
+      response.end();
       return;
     }
 
